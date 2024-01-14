@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { entryController } from './controllers/entry/entryController';
 import { pageInfoController } from './controllers/pageInfoController';
-import { statusController } from './controllers/statusController';
+import { passkeyController } from './controllers/passkeyController';
 
 const app = new Hono();
 app.use(
@@ -18,9 +18,13 @@ app.use(
 
 entryController(app);
 pageInfoController(app);
-statusController(app);
+passkeyController(app);
+
+app.get('/', (c) => {
+  return c.text('OK');
+});
 
 export default {
   fetch: app.fetch,
-  port: 3000,
+  port: 4000,
 };

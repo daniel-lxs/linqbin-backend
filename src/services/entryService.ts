@@ -4,9 +4,13 @@ import {
   createEntry,
   updateRemainingVisits,
 } from '../data/repositories/entryRepository';
-import { generateRandomString } from '../utils/generateRandomString';
+import { Entropy, charset64 } from 'entropy-string';
 
 export function findEntryBySlug(slug: string): Entry | null {
+  if (!slug) {
+    return null;
+  }
+
   const result = getEntryBySlug(slug);
   //TODO: handle expired entries
   if (!result) {
@@ -35,7 +39,7 @@ export function createNewEntry(
   ttl: number,
   visitCountThreshold: number
 ): Entry {
-  const slug = generateRandomString(8);
+  const slug = new Entropy({ charset: charset64, bits: 32 }).string();
 
   return createEntry({
     title,
