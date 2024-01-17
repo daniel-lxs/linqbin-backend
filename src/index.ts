@@ -7,7 +7,7 @@ import { passkeyController } from './controllers/passkeyController';
 const app = new Hono();
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://linqb.in',
     allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
