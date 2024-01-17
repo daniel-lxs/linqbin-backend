@@ -1,11 +1,12 @@
 {
   "name": "linqbin-backend",
   "module": "src/index.ts",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "start": "bun run ./src/index.ts",
     "dev": "bun --hot ./src/index.ts",
+    "build": "bun build ./src/index.ts --target=bun --outdir=dist",
     "generate-migrations": "bunx drizzle-kit generate:sqlite --schema ./src/data/models/index.ts",
     "run-migrations": "bun src/data/migrate.ts"
   },
