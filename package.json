@@ -8,7 +8,7 @@
     "dev": "bun --hot ./src/index.ts",
     "build": "bun build ./src/index.ts --target=bun --outdir=dist",
     "generate-migrations": "bunx drizzle-kit generate:sqlite --schema ./src/data/models/index.ts",
-    "run-migrations": "bun src/data/migrate.ts"
+    "migrations": "bun src/data/migrate.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -24,7 +24,9 @@ app.get('/', (c) => {
   return c.text('OK');
 });
 
+console.log(`Server listening on port ${process.env.PORT || 4000}`);
+
 export default {
   fetch: app.fetch,
-  port: 4000,
+  port: process.env.PORT || 4000,
 };
