@@ -16,8 +16,6 @@ COPY tsconfig.json .
 
 RUN bun run migrations
 
-COPY src/data/sqlite.db /app/data/sqlite.db
-
 RUN bun run build
 
 ENV NODE_ENV production
