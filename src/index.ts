@@ -8,9 +8,9 @@ const app = new Hono();
 app.use(
   '/*',
   cors({
-    origin: 'https://linqb.in',
+    origin: ['https://linqb.in', 'https://linqbin.cc'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
-    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    exposeHeaders: ['Content-Length'],
     maxAge: 600,
     credentials: true,
   })
