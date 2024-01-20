@@ -6,9 +6,7 @@
   "scripts": {
     "start": "bun run ./src/index.ts",
     "dev": "bun --hot ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=dist",
-    "generate-migrations": "bunx drizzle-kit generate:sqlite --schema ./src/data/models/index.ts",
-    "migrations": "bun src/data/migrate.ts"
+    "build": "bun build ./src/index.ts --target=bun --outdir=dist"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -1,7 +1,14 @@
 FROM oven/bun
 
 ARG PORT
+ARG MONGODB_URI
+ARG MONGODB_USER
+ARG MONGODB_PASSWORD
+
 ENV PORT=${PORT}
+ENV MONGODB_URI=${MONGODB_URI}
+ENV MONGODB_USER=${MONGODB_USER}
+ENV MONGODB_PASSWORD=${MONGODB_PASSWORD}
 
 WORKDIR /app
 
@@ -11,10 +18,7 @@ COPY bun.lockb .
 RUN bun install --production
 
 COPY src src
-COPY drizzle drizzle
 COPY tsconfig.json .
-
-RUN bun run migrations
 
 RUN bun run build
 
