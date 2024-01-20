@@ -1,71 +1,91 @@
-import { eq } from 'drizzle-orm';
-import { getDb } from '../connection';
-import { entrySchema, type Entry, type NewEntry } from '../models/entrySchema';
-import { assertEntity } from '../../utils/assertEntity';
+import mongoose from 'mongoose';
+import { entryModel, type Entry, type NewEntry } from '../models';
 
-export function createEntry({
+//Migrate to mongoose
+
+export async function createEntry({
   title,
   slug,
   content,
   ttl,
   visitCountThreshold,
-}: NewEntry): Entry {
-  const db = getDb();
+}: NewEntry) {
+  const entryDocument = new entryModel({
+    title,
+    slug,
+    content,
+    ttl,
+    visitCountThreshold,
+    remainingVisits: visitCountThreshold + 1, //+1 to account for the initial view
+    expiresOn: new Date(Date.now() + 1000 * 60 * 60 * ttl),
+    createdOn: new Date(),
+  });
 
-  const result = db
-    .insert(entrySchema)
-    .values({
-      title,
-      slug,
-      content,
-      ttl,
-      visitCountThreshold,
-      remainingVisits: visitCountThreshold + 1, //+1 to account for the initial view
-      expiresOn: new Date(Date.now() + 1000 * 60 * 60 * ttl),
-      createdOn: new Date(),
-    })
-    .returning()
-    .all()[0];
+  await entryDocument.save();
 
-  if (assertEntity(result, ['id', 'slug', 'title', 'content', 'expiresOn'])) {
-    return {
-      ...result,
-      title: result.title || undefined,
-    };
+  try {
+    entryModel.validate(entryDocument, [
+      'id',
+      'slug',
+      'title',
+      'content',
+      'expiresOn',
+    ]);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      console.error(error);
+      throw new Error('Entry could not be created');
+    }
+    throw error;
   }
-
-  throw new Error('Entry could not be created');
+  return entryDocument;
 }
 
-export function getEntryBySlug(slug: string): Entry | null {
-  const db = getDb();
-  const result = db
-    .select()
-    .from(entrySchema)
-    .where(eq(entrySchema.slug, slug))
-    .all()[0]; //get is bugged
+export async function findEntryBySlug(slug: string) {
+  try {
+    const entry = await entryModel.findOne({ slug });
 
-  if (assertEntity(result, ['id', 'slug', 'title', 'content', 'expiresOn'])) {
-    return {
-      ...result,
-      title: result.title || undefined,
-    };
+    if (!entry) {
+      console.debug(`Entry with slug ${slug} not found`);
+      return null;
+    }
+
+    if (entry.visitCountThreshold <= 0) {
+      console.debug(
+        `Visit count threshold is not enabled for entry with slug ${slug}`
+      );
+      return entry;
+    }
+
+    const updatedEntry = await entryModel.findOneAndUpdate(
+      { slug, remainingVisits: { $gt: 0 } }, // Ensure remainingVisits is greater than 0
+      { $inc: { remainingVisits: -1 } }, // Decrement remainingVisits by 1
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedEntry) {
+      // The entry was not found or remainingVisits was already 0
+      console.debug(`Entry with slug ${slug} has reached its threshold`);
+      await entryModel.deleteOne({ slug }); // Delete entry if threshold was reached
+      return null;
+    }
+
+    console.debug(
+      `Successfully decremented remaining visits for entry with slug ${slug}`
+    );
+    return updatedEntry;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-  return null;
 }
 
-export function updateRemainingVisits(slug: string) {
-  //Get the current remaining visits and substract one
-  const entry = getEntryBySlug(slug);
-
-  if (!entry) {
-    console.error(`Could not find entry with slug ${slug}`);
-    return;
+export async function deleteEntry(slug: string) {
+  try {
+    await entryModel.deleteOne({ slug });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
   }
-
-  const db = getDb();
-  db.update(entrySchema)
-    .set({ remainingVisits: entry.remainingVisits - 1 })
-    .where(eq(entrySchema.slug, slug))
-    .run();
 }

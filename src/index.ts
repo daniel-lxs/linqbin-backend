@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import { entryController } from './controllers/entry/entryController';
 import { pageInfoController } from './controllers/pageInfoController';
 import { passkeyController } from './controllers/passkeyController';
+import { initConnection } from './data/initConnection';
 
 const app = new Hono();
 app.use(
@@ -15,6 +16,8 @@ app.use(
     credentials: true,
   })
 );
+
+initConnection();
 
 entryController(app);
 pageInfoController(app);

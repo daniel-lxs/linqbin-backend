@@ -12,17 +12,16 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/entropy-string": "^4.2.3",
-    "drizzle-kit": "^0.20.10"
+    "@types/entropy-string": "^4.2.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.1.11",
-    "drizzle-orm": "^0.29.3",
     "entropy-string": "^4.2.0",
     "hono": "^3.12.0",
+    "mongoose": "^8.1.0",
     "zod": "^3.22.4"
   }
 }

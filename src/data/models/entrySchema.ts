@@ -1,32 +1,32 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { Schema, model } from 'mongoose';
 
-export const entrySchema = sqliteTable('entries', {
-  id: integer('id').primaryKey(),
-  slug: text('slug').notNull().unique(),
-  title: text('title'),
-  content: text('content').notNull(),
-  ttl: integer('ttl').notNull(),
-  visitCountThreshold: integer('visitCountThreshold').notNull(),
-  remainingVisits: integer('remainingVisits').notNull(),
-  createdOn: integer('createdOn', { mode: 'timestamp' }).notNull(),
-  expiresOn: integer('expiresOn', { mode: 'timestamp' }).notNull(),
-  deletedOn: integer('deletedOn', { mode: 'timestamp' }),
+export const entrySchema = new Schema({
+  slug: { type: String, required: true, unique: true },
+  title: { type: String },
+  content: { type: String, required: true },
+  ttl: { type: Number, required: true },
+  visitCountThreshold: { type: Number, required: true },
+  remainingVisits: { type: Number, required: true },
+  createdOn: { type: Date, required: true },
+  expiresOn: { type: Date, required: true },
 });
 
-export type NewEntry = Pick<
-  Entry,
-  'slug' | 'title' | 'content' | 'ttl' | 'visitCountThreshold'
->;
+export const entryModel = model('Entry', entrySchema);
 
 export type Entry = {
-  id: number;
   slug: string;
-  title?: string;
+  title?: string | null;
   content: string;
   ttl: number;
   visitCountThreshold: number;
   remainingVisits: number;
-  createdOn: Date;
-  expiresOn: Date;
-  deletedOn: Date | null;
+  createdOn: string;
+  expiresOn: string;
+};
+export type NewEntry = {
+  title?: string;
+  slug: string;
+  content: string;
+  ttl: number;
+  visitCountThreshold: number;
 };
