@@ -15,7 +15,7 @@ services:
       - '${PORT}:${PORT}'
     depends_on:
       - postgres
-    command: bash -c "bun run run-migrations"
+    command: bash -c "bun run src/data/migrate.ts"
 
   postgres:
     image: postgres
