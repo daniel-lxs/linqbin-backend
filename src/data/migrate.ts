@@ -13,7 +13,7 @@ async function runMigrations() {
         migrationsFolder: './drizzle',
       });
       console.log('Migrations completed successfully.');
-      process.exit(0); // Exit the process
+      process.exit();
     } catch (error) {
       console.error(
         `Failed to run migrations (attempt ${i + 1}/${maxRetries}): ${error}`

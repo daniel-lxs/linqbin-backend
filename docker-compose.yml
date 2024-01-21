@@ -15,7 +15,7 @@ services:
       - '${PORT}:${PORT}'
     depends_on:
       - postgres
-    command: 'bun src/data/migrate.ts'
+    command: bun src/data/migrate.ts && bun dist/index.js
 
   postgres:
     image: postgres
