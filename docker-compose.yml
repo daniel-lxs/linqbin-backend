@@ -15,7 +15,11 @@ services:
       - '${PORT}:${PORT}'
     depends_on:
       - postgres
-    command: bash -c "bun run src/data/migrate.ts"
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_PG_USER} -d linqbin']
+      interval: 5s
+      retries: 5
+    command: command: sh -c 'wait-for-it postgres:5432 -- bun src/data/migrate.ts'
 
   postgres:
     image: postgres
