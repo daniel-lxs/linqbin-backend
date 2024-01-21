@@ -1,17 +1,28 @@
-import { Schema, model } from 'mongoose';
+import {
+  integer,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
-export const entrySchema = new Schema({
-  slug: { type: String, required: true, unique: true },
-  title: { type: String },
-  content: { type: String, required: true },
-  ttl: { type: Number, required: true },
-  visitCountThreshold: { type: Number, required: true },
-  remainingVisits: { type: Number, required: true },
-  createdOn: { type: Date, required: true },
-  expiresOn: { type: Date, required: true },
+export const entries = pgTable('entries', {
+  id: serial('id').primaryKey(),
+  slug: varchar('slug', { length: 8 }).notNull(),
+  title: text('title'),
+  content: text('content').notNull(),
+  ttl: integer('ttl').notNull(),
+  visitCountThreshold: integer('visit_count_threshold').notNull(),
+  remainingVisits: integer('remaining_visits').notNull(),
+  createdOn: timestamp('created_on').defaultNow().notNull(),
+  expiresOn: timestamp('expires_on').notNull(),
 });
 
-export const entryModel = model('Entry', entrySchema);
+export type NewEntry = Pick<
+  Entry,
+  'title' | 'content' | 'ttl' | 'visitCountThreshold' | 'slug'
+>;
 
 export type Entry = {
   slug: string;
@@ -20,13 +31,6 @@ export type Entry = {
   ttl: number;
   visitCountThreshold: number;
   remainingVisits: number;
-  createdOn: string;
-  expiresOn: string;
-};
-export type NewEntry = {
-  title?: string;
-  slug: string;
-  content: string;
-  ttl: number;
-  visitCountThreshold: number;
+  createdOn: Date;
+  expiresOn: Date;
 };

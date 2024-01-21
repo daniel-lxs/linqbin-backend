@@ -1,19 +1,12 @@
 {
   "version": "5",
-  "dialect": "sqlite",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1704993686189,
-      "tag": "0000_redundant_shadow_king",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1705011342992,
-      "tag": "0001_jittery_sauron",
+      "when": 1705818241131,
+      "tag": "0000_lively_franklin_richards",
       "breakpoints": true
     }
   ]

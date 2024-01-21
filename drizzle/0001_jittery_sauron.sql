@@ -1,1 +1,0 @@
-ALTER TABLE entries ADD `remainingVisits` integer NOT NULL;

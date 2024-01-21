@@ -7,8 +7,11 @@ COPY bun.lockb .
 
 RUN bun install --production
 
-COPY src src
+COPY src ./src
+COPY drizzle ./drizzle
 COPY tsconfig.json .
+
+RUN bun run run-migrations
 
 RUN bun run build
 

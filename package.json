@@ -6,20 +6,24 @@
   "scripts": {
     "start": "bun run ./src/index.ts",
     "dev": "bun --hot ./src/index.ts",
-    "build": "bun build ./src/index.ts --target=bun --outdir=dist"
+    "build": "bun build ./src/index.ts --target=bun --outdir=dist",
+    "run-migrations": "bun run src/data/migrate.ts",
+    "generate-migrations": "bunx drizzle-kit generate:pg --schema ./src/data/models/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/entropy-string": "^4.2.3"
+    "@types/entropy-string": "^4.2.3",
+    "drizzle-kit": "^0.20.13"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.1.11",
+    "drizzle-orm": "^0.29.3",
     "entropy-string": "^4.2.0",
     "hono": "^3.12.0",
-    "mongoose": "^8.1.0",
+    "postgres": "^3.4.3",
     "zod": "^3.22.4"
   }
 }

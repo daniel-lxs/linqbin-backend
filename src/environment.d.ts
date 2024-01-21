@@ -4,9 +4,9 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       PORT: string;
-      MONGODB_URI: string;
-      MONGODB_USER: string;
-      MONGODB_PASSWORD: string;
+      DB_PG_URL: string;
+      DB_PG_USER: string;
+      DB_PG_PASSWORD: string;
     }
   }
 }

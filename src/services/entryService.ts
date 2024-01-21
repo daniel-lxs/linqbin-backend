@@ -27,7 +27,7 @@ export async function getEntryBySlug(slug: string): Promise<Entry | null> {
     return null;
   }
 
-  return entry.toJSON() as Entry;
+  return entry;
 }
 
 export async function createNewEntry(
@@ -46,7 +46,7 @@ export async function createNewEntry(
       visitCountThreshold,
     });
 
-    return createdEntry.toJSON() as Entry;
+    return createdEntry;
   } catch (error) {
     console.error(error);
     throw new Error('Failed to create a new entry');
