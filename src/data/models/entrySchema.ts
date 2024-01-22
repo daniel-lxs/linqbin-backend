@@ -25,6 +25,7 @@ export type NewEntry = Pick<
 >;
 
 export type Entry = {
+  id?: number;
   slug: string;
   title?: string | null;
   content: string;

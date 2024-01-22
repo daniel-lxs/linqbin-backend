@@ -1,7 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { getClient } from '../connection';
-import { entries, type NewEntry } from '../models';
+import { entries, type Entry, type NewEntry } from '../models';
 import { eq } from 'drizzle-orm';
+import { assertEntity } from '../../utils/assertEntity';
 
 export async function createEntry({
   title,
@@ -20,7 +21,7 @@ export async function createEntry({
         content,
         ttl,
         visitCountThreshold,
-        remainingVisits: visitCountThreshold + 1, //+1 to account for the initial view
+        remainingVisits: visitCountThreshold, //+1 to account for the initial view
         expiresOn: new Date(Date.now() + 1000 * 60 * 60 * ttl),
         createdOn: new Date(),
       })
@@ -46,12 +47,24 @@ export async function createEntry({
 
 export async function findEntryBySlug(slug: string) {
   try {
-    const db = drizzle(getClient(), { schema: { entries } });
+    const db = drizzle(getClient());
 
     // Check if the entry exists
-    const existingEntry = await db.query.entries.findFirst({ with: { slug } });
+    const existingEntry = (
+      await db.select().from(entries).where(eq(entries.slug, slug)).execute()
+    )[0];
 
-    if (!existingEntry) {
+    if (
+      !assertEntity<Entry>(existingEntry, [
+        'slug',
+        'title',
+        'remainingVisits',
+        'ttl',
+        'content',
+        'createdOn',
+        'expiresOn',
+      ])
+    ) {
       console.debug(`Entry with slug ${slug} not found`);
       return null;
     }
@@ -69,6 +82,8 @@ export async function findEntryBySlug(slug: string) {
       await db.delete(entries).where(eq(entries.slug, slug)); // Delete entry if threshold was reached
       return null;
     }
+
+    console.debug('Deleted entry:', existingEntry);
 
     const updatedEntry = await db
       .update(entries)
