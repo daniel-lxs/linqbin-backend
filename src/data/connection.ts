@@ -1,11 +1,21 @@
 import postgres from 'postgres';
 
-const queryClient = postgres(process.env.DB_PG_URL);
+let queryClient = postgres(process.env.DB_PG_URL, {
+  keep_alive: 30000, // Use keepAlive instead of keep_alive
+});
 
 export function getClient(): postgres.Sql {
   if (!queryClient) {
     throw new Error('Connection: Database is invalid or nonexistent');
   }
+
+  queryClient.subscribe('error', (error) => {
+    console.error('Connection: Database error:', error);
+
+    queryClient = postgres(process.env.DB_PG_URL, {
+      keep_alive: 30000,
+    });
+  });
 
   return queryClient;
 }
