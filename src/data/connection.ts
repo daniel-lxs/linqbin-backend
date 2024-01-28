@@ -9,13 +9,5 @@ export function getClient(): postgres.Sql {
     throw new Error('Connection: Database is invalid or nonexistent');
   }
 
-  queryClient.subscribe('error', (error) => {
-    console.error('Connection: Database error:', error);
-
-    queryClient = postgres(process.env.DB_PG_URL, {
-      keep_alive: 30000,
-    });
-  });
-
   return queryClient;
 }
