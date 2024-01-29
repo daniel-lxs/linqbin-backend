@@ -16,6 +16,8 @@ services:
     depends_on:
       - postgres
     command: 'sh ./migrate-and-start.sh'
+    networks:
+      - linqbin-net
 
   postgres:
     image: postgres
@@ -25,7 +27,11 @@ services:
       POSTGRES_USER: ${DB_PG_USER}
       POSTGRES_PASSWORD: ${DB_PG_PASSWORD}
       POSTGRES_DB: linqbin
-    ports:
-      - '5432:5432'
     volumes:
       - /var/lib/postgresql/data
+    networks:
+      - linqbin-net
+
+networks:
+  linqbin-net:
+    driver: bridge
