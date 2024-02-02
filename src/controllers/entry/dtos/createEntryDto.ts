@@ -1,7 +1,7 @@
 import { z } from 'zod';
 export const createEntryDto = {
-  title: z.string().optional(),
-  content: z.string(),
+  title: z.string().max(150).optional(),
+  content: z.string().max(20000),
   ttl: z
     .number()
     .min(1)
