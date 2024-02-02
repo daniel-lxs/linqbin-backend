@@ -7,7 +7,7 @@ import {
 import { Entropy, charset64 } from 'entropy-string';
 
 export async function getEntryBySlug(slug: string): Promise<Entry | null> {
-  if (!slug || slug.length > 6) {
+  if (!slug || slug.length !== 6) {
     //Save resources on invalid slugs
     console.debug(`[EntryService] Invalid slug ${slug}`);
     return null;
