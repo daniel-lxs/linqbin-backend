@@ -71,9 +71,6 @@ export async function findEntryBySlug(slug: string) {
 
     // Check if visit count threshold is not enabled
     if (existingEntry.visitCountThreshold <= 0) {
-      console.debug(
-        `Visit count threshold is not enabled for entry with slug ${slug}`
-      );
       return existingEntry;
     }
 

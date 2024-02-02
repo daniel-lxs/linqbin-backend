@@ -9,14 +9,14 @@ import { Entropy, charset64 } from 'entropy-string';
 export async function getEntryBySlug(slug: string): Promise<Entry | null> {
   if (!slug || slug.length !== 6) {
     //Save resources on invalid slugs
-    console.debug(`[EntryService] Invalid slug ${slug}`);
+    console.log(`[EntryService] Invalid slug ${slug}`);
     return null;
   }
 
   const entry = await findEntryBySlug(slug);
 
   if (!entry) {
-    console.debug(
+    console.log(
       `[EntryService] Entry with slug ${slug} not found or has reached its threshold`
     );
     return null;
@@ -24,7 +24,7 @@ export async function getEntryBySlug(slug: string): Promise<Entry | null> {
 
   const currentDate = new Date();
   if (currentDate.getTime() > entry.expiresOn.getTime()) {
-    console.debug(`[EntryService] Entry with slug ${slug} has expired`);
+    console.log(`[EntryService] Entry with slug ${slug} has expired`);
     await deleteEntry(slug);
     return null;
   }

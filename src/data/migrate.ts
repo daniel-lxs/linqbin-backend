@@ -12,11 +12,13 @@ async function runMigrations() {
       await migrate(drizzle(migrationClient), {
         migrationsFolder: './drizzle',
       });
-      console.log('Migrations completed successfully.');
+      console.log('[Migrate] Migrations completed successfully.');
       process.exit();
     } catch (error) {
       console.error(
-        `Failed to run migrations (attempt ${i + 1}/${maxRetries}): ${error}`
+        `[Migrate] Failed to run migrations (attempt ${
+          i + 1
+        }/${maxRetries}): ${error}`
       );
       // Sleep before the next retry
       await new Promise((resolve) => setTimeout(resolve, retryInterval));
