@@ -41,7 +41,7 @@ export async function createEntry({
   } catch (error) {
     // handle error
     console.error(error);
-    throw new Error('Failed to create entry');
+    throw new Error('[EntryRepository] Failed to create entry');
   }
 }
 
@@ -65,7 +65,7 @@ export async function findEntryBySlug(slug: string) {
         'expiresOn',
       ])
     ) {
-      console.debug(`Entry with slug ${slug} not found`);
+      console.debug(`[EntryRepository] Entry with slug ${slug} not found`);
       return null;
     }
 
@@ -78,12 +78,13 @@ export async function findEntryBySlug(slug: string) {
     }
 
     if (existingEntry.remainingVisits <= 0) {
-      console.debug(`Entry with slug ${slug} has reached its threshold`);
-      await db.delete(entries).where(eq(entries.slug, slug)); // Delete entry if threshold was reached
+      console.debug(
+        `[EntryRepository] Entry with slug ${slug} has reached its threshold`
+      );
+      await db.delete(entries).where(eq(entries.slug, slug));
+      console.debug(`[EntryRepository] Deleted entry with slug: ${slug}`);
       return null;
     }
-
-    console.debug('Deleted entry:', existingEntry);
 
     const updatedEntry = await db
       .update(entries)
@@ -101,9 +102,6 @@ export async function findEntryBySlug(slug: string) {
       })
       .execute();
 
-    console.debug(
-      `Successfully decremented remaining visits for entry with slug ${slug}`
-    );
     return updatedEntry[0];
   } catch (error) {
     console.error(error);
