@@ -1,0 +1,58 @@
+name: Version and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image with Latest Tag
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: |
+            linqbin/linqbin-api:${{ github.sha }}
+            linqbin/linqbin-api:latest
+
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Semantic Versioning
+        uses: paulhatch/semantic-version@v5.3.0
+        with:
+          tag_prefix: 'v'
+          major_pattern: '(MAJOR)'
+          major_regexp_flags: ''
+          minor_pattern: '(MINOR)'
+          minor_regexp_flags: ''
+          version_format: '${major}.${minor}.${patch}-prerelease${increment}'
+          change_path: 'src/'
+          namespace: linqbin-api
+          bump_each_commit: false
+          bump_each_commit_patch_pattern: ''
+          search_commit_body: false
+          user_format_type: 'csv'
+          enable_prerelease_mode: true
+          debug: false
+          version_from_branch: false
