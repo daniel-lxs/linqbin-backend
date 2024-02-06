@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: linqbin/linqbin-backend:latest
+    image: linqbin/linqbin-api:latest
     container_name: api
     env_file:
       - .env

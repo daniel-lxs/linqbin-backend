@@ -1,5 +1,6 @@
 {
-  "name": "linqbin-backend",
+  "name": "linqbin-api",
+  "description": "Ephemeral encrypted link shortener api for Linqbin",
   "module": "src/index.ts",
   "version": "1.0.0",
   "type": "module",
