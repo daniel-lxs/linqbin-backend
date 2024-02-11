@@ -11,7 +11,13 @@ export function entryController(app: Hono) {
 
   entry.get('/:slug', async (c) => {
     const slug = c.req.param('slug');
-    const entry = await getEntryBySlug(slug);
+    const protoHash = c.req.query('hash');
+
+    if (!slug || !protoHash) {
+      return c.text('Invalid request', 400);
+    }
+
+    const entry = await getEntryBySlug(slug, protoHash);
 
     if (!entry) {
       return c.text('Entry not found', 404);
@@ -20,15 +26,17 @@ export function entryController(app: Hono) {
   });
 
   entry.post('/', zValidator('json', z.object(createEntryDto)), async (c) => {
-    const { title, content, ttl, visitCountThreshold } = c.req.valid('json');
-    let createdEntry: Entry | null = null;
+    const { title, content, ttl, visitCountThreshold, protoHash } =
+      c.req.valid('json');
+    let createdEntry: Omit<Entry, 'hash'> | null = null;
 
     try {
       createdEntry = await createNewEntry(
         title,
         content,
         ttl,
-        visitCountThreshold
+        visitCountThreshold,
+        protoHash
       );
     } catch (error) {
       if (error instanceof Error) {

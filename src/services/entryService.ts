@@ -6,7 +6,10 @@ import {
 } from '../data/repositories/entryRepository';
 import { Entropy, charset64 } from 'entropy-string';
 
-export async function getEntryBySlug(slug: string): Promise<Entry | null> {
+export async function getEntryBySlug(
+  slug: string,
+  protoHash: string
+): Promise<Omit<Entry, 'hash'> | null> {
   if (!slug || slug.length !== 6) {
     //Save resources on invalid slugs
     console.log(`[EntryService] Invalid slug ${slug}`);
@@ -29,6 +32,12 @@ export async function getEntryBySlug(slug: string): Promise<Entry | null> {
     return null;
   }
 
+  const isVerified = await Bun.password.verify(entry.hash, protoHash);
+
+  if (!isVerified) {
+    return null;
+  }
+
   return entry;
 }
 
@@ -36,19 +45,25 @@ export async function createNewEntry(
   title: string | undefined,
   content: string,
   ttl: number,
-  visitCountThreshold: number
-): Promise<Entry> {
+  visitCountThreshold: number,
+  protoHash: string
+): Promise<Omit<Entry, 'hash'>> {
   try {
     const slug = new Entropy({ charset: charset64, bits: 32 }).string();
+    const hash = await Bun.password.hash(protoHash);
+
     const createdEntry = await createEntry({
       title,
       slug,
       content,
       ttl,
       visitCountThreshold,
+      hash,
     });
+    const { hash: _, ...entry } = createdEntry; //Remove hash field
+
     console.log(`[EntryService] Created new entry with slug ${slug}`);
-    return createdEntry;
+    return entry;
   } catch (error) {
     console.error(error);
     throw new Error('Failed to create a new entry');

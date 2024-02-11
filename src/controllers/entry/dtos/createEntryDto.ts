@@ -2,6 +2,7 @@ import { z } from 'zod';
 export const createEntryDto = {
   title: z.string().max(150).optional(),
   content: z.string().max(20000),
+  protoHash: z.string().length(64),
   ttl: z
     .number()
     .min(1)
