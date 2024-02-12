@@ -32,13 +32,15 @@ export async function getEntryBySlug(
     return null;
   }
 
-  const isVerified = await Bun.password.verify(entry.hash, protoHash);
+  const isVerified = await Bun.password.verify(protoHash, entry.hash);
 
   if (!isVerified) {
     return null;
   }
 
-  return entry;
+  const { hash: _, ...strippedHashEntry } = entry; //Remove hash field
+
+  return strippedHashEntry;
 }
 
 export async function createNewEntry(

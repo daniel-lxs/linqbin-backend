@@ -42,7 +42,6 @@ export async function createEntry({
 
     return entry[0];
   } catch (error) {
-    // handle error
     console.error(error);
     throw new Error('[EntryRepository] Failed to create entry');
   }
