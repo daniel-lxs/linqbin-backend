@@ -10,7 +10,8 @@ export async function createEntry({
   content,
   ttl,
   visitCountThreshold,
-}: NewEntry) {
+  hash,
+}: NewEntry): Promise<Entry> {
   try {
     const db = drizzle(getClient());
     const entry = await db
@@ -21,7 +22,8 @@ export async function createEntry({
         content,
         ttl,
         visitCountThreshold,
-        remainingVisits: visitCountThreshold, //+1 to account for the initial view
+        remainingVisits: visitCountThreshold,
+        hash,
         expiresOn: new Date(Date.now() + 1000 * 60 * 60 * ttl),
         createdOn: new Date(),
       })
@@ -30,6 +32,7 @@ export async function createEntry({
         title: entries.title,
         content: entries.content,
         ttl: entries.ttl,
+        hash: entries.hash,
         visitCountThreshold: entries.visitCountThreshold,
         remainingVisits: entries.remainingVisits,
         createdOn: entries.createdOn,
@@ -39,13 +42,12 @@ export async function createEntry({
 
     return entry[0];
   } catch (error) {
-    // handle error
     console.error(error);
     throw new Error('[EntryRepository] Failed to create entry');
   }
 }
 
-export async function findEntryBySlug(slug: string) {
+export async function findEntryBySlug(slug: string): Promise<Entry | null> {
   try {
     const db = drizzle(getClient());
 
@@ -92,6 +94,7 @@ export async function findEntryBySlug(slug: string) {
         title: entries.title,
         content: entries.content,
         ttl: entries.ttl,
+        hash: entries.hash,
         visitCountThreshold: entries.visitCountThreshold,
         remainingVisits: entries.remainingVisits,
         createdOn: entries.createdOn,

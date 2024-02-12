@@ -15,13 +15,14 @@ export const entries = pgTable('entries', {
   ttl: integer('ttl').notNull(),
   visitCountThreshold: integer('visit_count_threshold').notNull(),
   remainingVisits: integer('remaining_visits').notNull(),
+  hash: text('hash').notNull(),
   createdOn: timestamp('created_on').defaultNow().notNull(),
   expiresOn: timestamp('expires_on').notNull(),
 });
 
 export type NewEntry = Pick<
   Entry,
-  'title' | 'content' | 'ttl' | 'visitCountThreshold' | 'slug'
+  'title' | 'content' | 'ttl' | 'visitCountThreshold' | 'slug' | 'hash'
 >;
 
 export type Entry = {
@@ -32,6 +33,7 @@ export type Entry = {
   ttl: number;
   visitCountThreshold: number;
   remainingVisits: number;
+  hash: string;
   createdOn: Date;
   expiresOn: Date;
 };
