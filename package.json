@@ -23,7 +23,7 @@
     "@hono/zod-validator": "^0.1.11",
     "drizzle-orm": "^0.29.3",
     "entropy-string": "^4.2.0",
-    "hono": "^3.12.0",
+    "hono": "^4.0.0",
     "postgres": "^3.4.3",
     "rate-limiter-flexible": "^4.0.1",
     "zod": "^3.22.4"
