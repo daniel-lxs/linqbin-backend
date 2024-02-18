@@ -24,7 +24,7 @@
     "drizzle-orm": "^0.29.3",
     "entropy-string": "^4.2.0",
     "hono": "^3.12.0",
-    "postgres": "^3.4.3",
+    "postgres": "https://github.com/porsager/postgres/archive/2b85ea7fb8b50f7c69232bd8074aa11c8cbe9d3a.tar.gz",
     "rate-limiter-flexible": "^4.0.1",
     "zod": "^3.22.4"
   }
