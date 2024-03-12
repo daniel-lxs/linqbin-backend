@@ -3,6 +3,9 @@ import { cors } from 'hono/cors';
 import { entryController } from './controllers/entry/entryController';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { HTTPException } from 'hono/http-exception';
+import { Logger } from '@control.systems/logger';
+
+const logger = new Logger('App');
 
 const app = new Hono();
 app.use(
@@ -57,7 +60,7 @@ app.get('/', (c) => {
   return c.text('OK');
 });
 
-console.log(`[App] Server listening on port ${process.env.PORT || 4000}`);
+logger.info(`Server listening on port ${process.env.PORT || 4000}`);
 
 export default {
   fetch: app.fetch,

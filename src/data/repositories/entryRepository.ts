@@ -3,6 +3,9 @@ import { getClient } from '../connection';
 import { entries, type Entry, type NewEntry } from '../models';
 import { eq } from 'drizzle-orm';
 import { assertEntity } from '../../utils/assertEntity';
+import { Logger } from '@control.systems/logger';
+
+const logger = new Logger('EntryRepository');
 
 export async function createEntry({
   title,
@@ -42,8 +45,12 @@ export async function createEntry({
 
     return entry[0];
   } catch (error) {
-    console.error(error);
-    throw new Error('[EntryRepository] Failed to create entry');
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else {
+      logger.error(error);
+    }
+    throw error;
   }
 }
 
@@ -67,7 +74,7 @@ export async function findEntryBySlug(slug: string): Promise<Entry | null> {
         'expiresOn',
       ])
     ) {
-      console.debug(`[EntryRepository] Entry with slug ${slug} not found`);
+      logger.info(`Entry with slug ${slug} not found`);
       return null;
     }
 
@@ -77,11 +84,9 @@ export async function findEntryBySlug(slug: string): Promise<Entry | null> {
     }
 
     if (existingEntry.remainingVisits <= 0) {
-      console.debug(
-        `[EntryRepository] Entry with slug ${slug} has reached its threshold`
-      );
+      logger.info(`Entry with slug ${slug} has reached its threshold`);
       await db.delete(entries).where(eq(entries.slug, slug));
-      console.debug(`[EntryRepository] Deleted entry with slug: ${slug}`);
+      logger.info(`Entry with slug ${slug} has been deleted`);
       return null;
     }
 
@@ -104,7 +109,9 @@ export async function findEntryBySlug(slug: string): Promise<Entry | null> {
 
     return updatedEntry[0];
   } catch (error) {
-    console.error(error);
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else logger.error(error);
     return null;
   }
 }
@@ -115,7 +122,9 @@ export async function deleteEntry(slug: string) {
     await db.delete(entries).where(eq(entries.slug, slug));
     return true;
   } catch (error) {
-    console.error(error);
+    if (error instanceof Error) {
+      logger.error(error.message);
+    } else logger.error(error);
     return false;
   }
 }
